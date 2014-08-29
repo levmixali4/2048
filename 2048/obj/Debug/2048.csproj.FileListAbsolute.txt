@@ -1,0 +1,12 @@
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.exe.config
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.exe
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.pdb
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.csprojResolveAssemblyReference.cache
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\obj\Debug\_2048.Controls.Tile.resources
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\obj\Debug\_2048.Form1.resources
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\obj\Debug\_2048.Properties.Resources.resources
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.csproj.GenerateResource.Cache
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.exe
+c:\users\mixa\documents\visual studio 2012\Projects\2048\2048\obj\Debug\2048.pdb
+C:\Users\Mixa\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.Core.dll
+C:\Users\Mixa\documents\visual studio 2012\Projects\2048\2048\bin\Debug\2048.Core.pdb

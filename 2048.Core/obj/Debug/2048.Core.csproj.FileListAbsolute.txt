@@ -1,0 +1,5 @@
+C:\Users\Mixa\documents\visual studio 2012\Projects\2048\2048.Core\obj\Debug\2048.Core.csprojResolveAssemblyReference.cache
+C:\Users\Mixa\documents\visual studio 2012\Projects\2048\2048.Core\bin\Debug\2048.Core.dll
+C:\Users\Mixa\documents\visual studio 2012\Projects\2048\2048.Core\bin\Debug\2048.Core.pdb
+C:\Users\Mixa\documents\visual studio 2012\Projects\2048\2048.Core\obj\Debug\2048.Core.dll
+C:\Users\Mixa\documents\visual studio 2012\Projects\2048\2048.Core\obj\Debug\2048.Core.pdb
