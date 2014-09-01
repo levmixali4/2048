@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -8,10 +9,18 @@ namespace _2048.Core
     public class GameLogick
     {
         Dictionary<Coordinate, int> _tilesState;
-
+        int _soccer = 0;
         public GameLogick(int side)
         {
             Side = side;
+        }
+
+        public int Soccer
+        {
+            get
+            {
+                return _soccer;
+            }
         }
 
         public Dictionary<Coordinate, int> TilesState
@@ -61,39 +70,24 @@ namespace _2048.Core
                     _tilesState[_tilesState.ElementAt(i).Key] = 0;
                 }
             }
-            Coordinate[] newValues = new Coordinate[3];
-            //newValues[0] = AddRandomValue();
-            //newValues[1] = AddRandomValue();
-            newValues[0] = new Coordinate(1, 1);
-            _tilesState[newValues[0]] = 2;
-            newValues[1] = new Coordinate(1, 2);
-            _tilesState[newValues[1]] = 4;
-            newValues[2] = new Coordinate(1, 3);
-            _tilesState[newValues[2]] = 4;
+            Coordinate[] newValues = new Coordinate[2];
+            newValues[0] = AddRandomValue();
+            newValues[1] = AddRandomValue();
+            //newValues[0] = new Coordinate(1, 1);
+            //_tilesState[newValues[0]] = 2;
+            //newValues[1] = new Coordinate(1, 2);
+            //_tilesState[newValues[1]] = 4;
+            //newValues[2] = new Coordinate(1, 3);
+            //_tilesState[newValues[2]] = 4;
             OnStateChanged(newValues);
         }
 
         public void ExecuteMove(Direction direction)
         {
             int x=1, y=1;
-            switch (direction)
-            {
-                case Direction.Left:     
-                case Direction.Up:
-                    x = 1;
-                    y = 1;
-                    break;
-                case Direction.Right:
-                    x = Side;
-                    y = 1;
-                    break;
-                case Direction.Down:
-                    x = 1;
-                    y = Side;
-                    break;               
-            }
+            GetFirstCoordinates(direction, ref x, ref y);
             Coordinate c, cNext, cEmpty;            
-            bool wasMoved = false;
+            bool[] wasMoved = new bool[Side];
             List<Coordinate> newValues = null;
 
             for (int i = 1; i <= Side; i++)
@@ -109,84 +103,96 @@ namespace _2048.Core
                 c = new Coordinate(x, y);
                 TryGetNextCoordinate(direction, c, out cNext);
                 cEmpty = null;
-                while (true)
-                {                    
-                    if (_tilesState[c] == 0 && _tilesState[cNext] == 0)
-                    {
-                        if (cEmpty == null)
-                            cEmpty = cNext;
-                        if (!TryGetNextCoordinate(direction, cNext, out cNext))
-                        {
-                            break;
-                        }
-                        continue;
-                    }
-                    else if (_tilesState[c] != 0 && _tilesState[cNext] == 0)
-                    {
-                        if (cEmpty == null)
-                            cEmpty = cNext;
-                        if (!TryGetNextCoordinate(direction, cNext, out cNext))
-                        {
-                            break;
-                        }
-                        continue;
-                    }
-                    else if (_tilesState[c] == 0 && _tilesState[cNext] != 0)
-                    {
-                        _tilesState[c] = _tilesState[cNext];
-                        _tilesState[cNext] = 0;
-                        wasMoved = true;
-                        if (cEmpty == null)
-                            cEmpty = cNext;
-                        if (!TryGetNextCoordinate(direction, cNext, out cNext))
-                        {
-                            break;
-                        }
-                        continue;
-                    }
-                    else if (_tilesState[c] != 0 && _tilesState[cNext] != 0)
-                    {
-                        if (_tilesState[c] == _tilesState[cNext])
-                        {
-                            _tilesState[c] = _tilesState[c] + _tilesState[cNext];
-                            if (newValues == null)
-                                newValues = new List<Coordinate>();
-                            newValues.Add(new Coordinate(c.X, c.Y));
-                            // TODO: increase soccer;
-                            _tilesState[cNext] = 0;
-                            wasMoved = true;
-                            if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
-                            {
-                                break;
-                            }
-                        }
-                        else if (cEmpty != null)
-                        {
-                            _tilesState[cEmpty] = _tilesState[cNext];
-                            _tilesState[cNext] = 0;
-                            wasMoved = true;
-                            if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
-                            {
-                                break;
-                            }
-                            cEmpty = null;
-                        }
-                        else
-                        {
-                            if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
+                wasMoved[i-1] = MoveRowCell(c, cNext, cEmpty, direction, newValues);
             }
-            if (wasMoved)
+            if (wasMoved.Any(m=>m==true))
             {
                 if (newValues == null)
                     newValues = new List<Coordinate>();
                 newValues.Add(AddRandomValue());
                 OnStateChanged(newValues.ToArray());
+            }
+        }
+
+        private bool MoveRowCell(Coordinate c, Coordinate cNext, Coordinate cEmpty, Direction direction, List<Coordinate> newValues)
+        {
+            bool wasMoved=false;
+            while (true)
+            {
+                if (_tilesState[c] == 0 && _tilesState[cNext] == 0)
+                {
+                    if (!TryGetNextCoordinate(direction, cNext, out cNext))
+                    {
+                        break;
+                    }
+                    continue;
+                }
+                else if (_tilesState[c] != 0 && _tilesState[cNext] == 0)
+                {
+                    if (!TryGetNextCoordinate(direction, cNext, out cNext))
+                    {
+                        break;
+                    }
+                    continue;
+                }
+                else if (_tilesState[c] == 0 && _tilesState[cNext] != 0)
+                {
+                    _tilesState[c] = _tilesState[cNext];
+                    _tilesState[cNext] = 0;
+                    wasMoved = true;
+                    if (cEmpty == null)
+                        cEmpty = cNext;
+                    if (!TryGetNextCoordinate(direction, cNext, out cNext))
+                    {
+                        break;
+                    }
+                    continue;
+                }
+                else if (_tilesState[c] != 0 && _tilesState[cNext] != 0)
+                {
+                    if (_tilesState[c] == _tilesState[cNext])
+                    {
+                        _tilesState[c] = _tilesState[c] + _tilesState[cNext];
+                        if (newValues == null)
+                            newValues = new List<Coordinate>();
+                        newValues.Add(new Coordinate(c.X, c.Y));
+                        _soccer += _tilesState[c];
+                        _tilesState[cNext] = 0;
+                        wasMoved = true;
+                        if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, c, out cNext))
+                        {
+                            break;
+                        }
+                    }
+                }                
+            }
+            return wasMoved;
+        }
+
+        private void GetFirstCoordinates(Direction direction, ref int x, ref int y)
+        {
+            switch (direction)
+            {
+                case Direction.Left:
+                case Direction.Up:
+                    x = 1;
+                    y = 1;
+                    break;
+                case Direction.Right:
+                    x = Side;
+                    y = 1;
+                    break;
+                case Direction.Down:
+                    x = 1;
+                    y = Side;
+                    break;
             }
         }
 
