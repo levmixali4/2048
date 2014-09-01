@@ -9,11 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using _2048.Core;
+using System.IO;
 
 namespace _2048
 {
     public partial class Form1 : Form
     {
+        private string GameStateFileName = "last_state.txt";
         const int Side = 4;
         Dictionary<Coordinate, Tile> _tiles;
         GameLogick GameLogick; 
@@ -37,7 +39,32 @@ namespace _2048
             GameLogick = new GameLogick(Side);
             GameLogick.StateChanged += GameLogick_StateChanged;
             GameLogick.GameOver += GameLogick_GameOver;
-            GameLogick.NewGame();
+            if (TryRepearPreviousState())
+            {
+                NewGame();
+            }
+        }
+
+        private bool TryRepearPreviousState()
+        {
+            try
+            {
+                using (FileStream fs = File.OpenRead(GameStateFileName))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        while(!sr.EndOfStream)
+                        {
+                            string[] tile = sr.ReadLine().Split(';');
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return false;
         }
 
         void GameLogick_StateChanged(object sender, StateChangedEventArgs e)
@@ -65,6 +92,7 @@ namespace _2048
             {
                 Tiles[e.NewCoordinates[i]].Blink();
             }
+            SoccerLabel.Text = GameLogick.Soccer.ToString();
         }
 
         void GameLogick_GameOver(object sender, EventArgs e)
@@ -89,69 +117,6 @@ namespace _2048
             StatusLabel.Text = string.Empty;
             GameLogick.NewGame();            
         }
-
-        //private void AddRandomValue()
-        //{
-        //    int x, y;
-        //    Tile tile = null;
-        //    Coordinate c;
-        //    while (tile == null || tile.Value != 0)
-        //    {
-        //        x = Random.Next(1, Side+1);
-        //        y = Random.Next(1, Side+1);
-        //        c = new Coordinate(x, y);
-        //        tile = Tiles[c];
-        //    }
-        //    if (Random.Next(-5, 5) >= 0)
-        //        tile.Value = 2;
-        //    else
-        //        tile.Value = 4;
-
-        //    if (IsGameOver())
-        //    {
-        //        StatusLabel.Text = "Game Over";
-        //    }
-        //}
-
-        //private bool IsGameOver()
-        //{
-        //    if (Tiles.Any(t => t.Value.Value == 0))
-        //        return false;
-
-        //    return !AnyMoves(ArrowDirection.Left) && !AnyMoves(ArrowDirection.Up);
-        //}
-
-        //private bool AnyMoves(ArrowDirection direction)
-        //{
-        //    int x = 1, y = 1;
-        //    Coordinate c = new Coordinate();
-        //    Coordinate cNext = new Coordinate();
-        //    for (int i = 1; i <= Side; i++)
-        //    {
-        //        if (direction == ArrowDirection.Up)
-        //        {
-        //            x = i;
-        //        }
-        //        else
-        //        {
-        //            y = i;
-        //        }
-        //        c = new Coordinate(x, y);
-        //        TryGetNextCoordinate(direction, c, out cNext);
-        //        while (true)
-        //        {
-        //            if (Tiles[c].Value == Tiles[cNext].Value)
-        //            {
-        //                return true;
-        //            }
-        //            if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
-        //            {
-        //                break;
-        //            }
-        //        }
-        //    }
-        //    return false;
-        //}
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
@@ -179,138 +144,21 @@ namespace _2048
                     return;
             }
         }
-        
-        //private bool ExecuteMove(ArrowDirection direction, int x, int y)
-        //{
-        //    Coordinate c, cNext, cEmpty;
-        //    Tile tile, tileNext;
-        //    bool wasMoved = false;
 
-        //    for (int i = 1; i <= Side; i++)
-        //    {
-        //        if (direction == ArrowDirection.Down || direction == ArrowDirection.Up)
-        //        {
-        //            x = i;
-        //        }
-        //        else
-        //        {
-        //            y = i;
-        //        }
-        //        c = new Coordinate(x, y);
-        //        TryGetNextCoordinate(direction, c, out cNext);
-        //        cEmpty = null;
-        //        while (true)
-        //        {
-        //            tile = Tiles[c];
-        //            tileNext = Tiles[cNext];
-        //            if (tile.Value == 0 && tileNext.Value == 0)
-        //            {
-        //                if (cEmpty == null)
-        //                    cEmpty = cNext;
-        //                if (!TryGetNextCoordinate(direction, cNext, out cNext))
-        //                {
-        //                    break;
-        //                }
-        //                continue;
-        //            }
-        //            else if (tile.Value != 0 && tileNext.Value == 0)
-        //            {
-        //                if (cEmpty == null)
-        //                    cEmpty = cNext;
-        //                if (!TryGetNextCoordinate(direction, cNext, out cNext))
-        //                {
-        //                    break;
-        //                }
-        //                continue;
-        //            }
-        //            else if (tile.Value == 0 && tileNext.Value != 0)
-        //            {
-        //                tile.Value = tileNext.Value;
-        //                tileNext.Value = 0;
-        //                wasMoved = true;
-        //                if (cEmpty == null)
-        //                    cEmpty = cNext;
-        //                if (!TryGetNextCoordinate(direction, cNext, out cNext))
-        //                {
-        //                    break;
-        //                }
-        //                continue;
-        //            }
-        //            else if (tile.Value != 0 && tileNext.Value != 0)
-        //            {
-        //                if (tile.Value == tileNext.Value)
-        //                {
-        //                    tile.Value = tile.Value + tileNext.Value;
-        //                    tileNext.Value = 0;
-        //                    wasMoved = true;
-        //                    if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
-        //                    {
-        //                        break;
-        //                    }
-        //                }
-        //                else if (cEmpty != null)
-        //                {
-        //                    Tiles[cEmpty].Value = tileNext.Value;
-        //                    tileNext.Value = 0;
-        //                    wasMoved = true;
-        //                    if (!TryGetNextCoordinate(direction, cEmpty, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
-        //                    {
-        //                        break;
-        //                    }
-        //                    cEmpty = null;
-        //                }
-        //                else
-        //                {
-        //                    if (!TryGetNextCoordinate(direction, c, out c) || !TryGetNextCoordinate(direction, cNext, out cNext))
-        //                    {
-        //                        break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return wasMoved;
-        //}
-
-        //private bool TryGetNextCoordinate(ArrowDirection direction, Coordinate c, out Coordinate cNext)
-        //{
-        //    switch (direction)
-        //    {
-        //        case ArrowDirection.Down:
-        //            if (c.Y == 1)
-        //            {
-        //                cNext = c;
-        //                return false;
-        //            }
-        //            cNext = new Coordinate(c.X, c.Y - 1);
-        //            return true;                    
-        //        case ArrowDirection.Left:
-        //            if (c.X == 4)
-        //            {
-        //                cNext = c;
-        //                return false;
-        //            }
-        //            cNext = new Coordinate(c.X + 1, c.Y);
-        //            return true;                    
-        //        case ArrowDirection.Right:
-        //            if (c.X == 1)
-        //            {
-        //                cNext = c;
-        //                return false;
-        //            }
-        //            cNext = new Coordinate(c.X - 1, c.Y);
-        //            return true;
-        //        case ArrowDirection.Up:
-        //            if (c.Y == Side)
-        //            {
-        //                cNext = c;
-        //                return false;
-        //            }
-        //            cNext = new Coordinate(c.X, c.Y + 1);
-        //            return true;
-        //    }
-        //    cNext = c;
-        //    return false;
-        //}
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            File.Delete(GameStateFileName);
+            using (FileStream fs = File.OpenWrite(GameStateFileName))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    foreach (var item in GameLogick.TilesState)
+                    {
+                        sw.WriteLine("{0};{1};{2}", item.Key.X, item.Key.Y, item.Value);
+                    }
+                }
+            }
+            base.OnFormClosing(e);
+        }
     }
 }

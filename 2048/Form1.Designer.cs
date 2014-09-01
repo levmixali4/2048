@@ -32,11 +32,15 @@
             this.StatusLabel = new System.Windows.Forms.Label();
             this.NewGameButton = new System.Windows.Forms.Button();
             this.MainPanel = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.SoccerLabel = new System.Windows.Forms.Label();
             this.HeaderPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // HeaderPanel
             // 
+            this.HeaderPanel.Controls.Add(this.SoccerLabel);
+            this.HeaderPanel.Controls.Add(this.label1);
             this.HeaderPanel.Controls.Add(this.StatusLabel);
             this.HeaderPanel.Controls.Add(this.NewGameButton);
             this.HeaderPanel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -73,6 +77,23 @@
             this.MainPanel.Size = new System.Drawing.Size(241, 5);
             this.MainPanel.TabIndex = 1;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(147, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(44, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Soccer:";
+            // 
+            // SoccerLabel
+            // 
+            this.SoccerLabel.AutoSize = true;
+            this.SoccerLabel.Location = new System.Drawing.Point(194, 9);
+            this.SoccerLabel.Name = "SoccerLabel";
+            this.SoccerLabel.Size = new System.Drawing.Size(0, 13);
+            this.SoccerLabel.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -97,6 +118,8 @@
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Button NewGameButton;
         private System.Windows.Forms.Label StatusLabel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label SoccerLabel;
     }
 }
 
