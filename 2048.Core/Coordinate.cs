@@ -4,10 +4,8 @@ using System.Linq;
 
 namespace _2048.Core
 {
-    public class Coordinate
+    public struct Coordinate
     {
-        public Coordinate()
-        { }
         public Coordinate(int x, int y)
         {
             X = x;
@@ -16,10 +14,10 @@ namespace _2048.Core
         public int X;
         public int Y;
 
-        public override int GetHashCode()
-        {
-            return X.GetHashCode() + Y.GetHashCode();
-        }
+        //public override int GetHashCode()
+        //{
+        //    return X.GetHashCode() + Y.GetHashCode();
+        //}
 
         public override string ToString()
         {
@@ -27,16 +25,16 @@ namespace _2048.Core
         }
     }
 
-    public class CoordinateEqualityComparer : IEqualityComparer<Coordinate>
-    {
-        public bool Equals(Coordinate x, Coordinate y)
-        {
-            return x.X == y.X && x.Y == y.Y;
-        }
+    //public class CoordinateEqualityComparer : IEqualityComparer<Coordinate>
+    //{
+    //    public bool Equals(Coordinate x, Coordinate y)
+    //    {
+    //        return x.X == y.X && x.Y == y.Y;
+    //    }
 
-        public int GetHashCode(Coordinate obj)
-        {
-            return obj.GetHashCode();
-        }
-    }
+    //    public int GetHashCode(Coordinate obj)
+    //    {
+    //        return obj.GetHashCode();
+    //    }
+    //}
 }

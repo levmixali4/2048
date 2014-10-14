@@ -106,7 +106,7 @@ namespace _2048
             {
                 if (_tiles == null)
                 {
-                    _tiles = new Dictionary<Coordinate, Tile>(new CoordinateEqualityComparer());
+                    _tiles = new Dictionary<Coordinate, Tile>();
                 }
                 return _tiles;
             }

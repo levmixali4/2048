@@ -44,7 +44,7 @@ namespace _2048.Core
         {
             if (_tilesState == null)
             {
-                _tilesState = new Dictionary<Coordinate, int>(new CoordinateEqualityComparer());
+                _tilesState = new Dictionary<Coordinate, int>();
                 int x = 1, y = 1;
                 Coordinate c;
                 for (int i = 1; i <= Side * Side; i++)
@@ -73,12 +73,6 @@ namespace _2048.Core
             Coordinate[] newValues = new Coordinate[2];
             newValues[0] = AddRandomValue();
             newValues[1] = AddRandomValue();
-            //newValues[0] = new Coordinate(1, 1);
-            //_tilesState[newValues[0]] = 2;
-            //newValues[1] = new Coordinate(1, 2);
-            //_tilesState[newValues[1]] = 4;
-            //newValues[2] = new Coordinate(1, 3);
-            //_tilesState[newValues[2]] = 4;
             OnStateChanged(newValues);
         }
 
@@ -86,7 +80,7 @@ namespace _2048.Core
         {
             int x=1, y=1;
             GetFirstCoordinates(direction, ref x, ref y);
-            Coordinate c, cNext, cEmpty;            
+            Coordinate c, cNext;
             bool[] wasMoved = new bool[Side];
             List<Coordinate> newValues = null;
 
@@ -102,8 +96,7 @@ namespace _2048.Core
                 }
                 c = new Coordinate(x, y);
                 TryGetNextCoordinate(direction, c, out cNext);
-                cEmpty = null;
-                wasMoved[i-1] = MoveRowCell(c, cNext, cEmpty, direction, newValues);
+                wasMoved[i-1] = MoveRowCell(c, cNext, direction, newValues);
             }
             if (wasMoved.Any(m=>m==true))
             {
@@ -114,7 +107,7 @@ namespace _2048.Core
             }
         }
 
-        private bool MoveRowCell(Coordinate c, Coordinate cNext, Coordinate cEmpty, Direction direction, List<Coordinate> newValues)
+        private bool MoveRowCell(Coordinate c, Coordinate cNext, Direction direction, List<Coordinate> newValues)
         {
             bool wasMoved=false;
             while (true)
@@ -140,8 +133,6 @@ namespace _2048.Core
                     _tilesState[c] = _tilesState[cNext];
                     _tilesState[cNext] = 0;
                     wasMoved = true;
-                    if (cEmpty == null)
-                        cEmpty = cNext;
                     if (!TryGetNextCoordinate(direction, cNext, out cNext))
                     {
                         break;
