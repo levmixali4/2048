@@ -73,6 +73,7 @@ namespace _2048.Core
             Coordinate[] newValues = new Coordinate[2];
             newValues[0] = AddRandomValue();
             newValues[1] = AddRandomValue();
+            _soccer = 0;
             OnStateChanged(newValues);
         }
 
